@@ -5,8 +5,11 @@ public class Chessboard extends JFrame {
     private ChessTile boardTiles[][];
     private String boardState;
 
+    /* Constructor to generate our chess board */
     public Chessboard () throws HeadlessException {
         this.boardTiles = new ChessTile[8][8];
+
+        /* The state of the game will be represented using FEN notation */
         this.boardState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
         setTitle("Chess By Gradi");
@@ -17,7 +20,10 @@ public class Chessboard extends JFrame {
         setVisible(true); setResizable(false);
     }
 
+    /* Colors our chess tiles */
     private void generateChessBoard(ChessTile boardTiles[][]){
+
+        /* The color value "true" represent a light/white tile */
         boolean color = true;
 
         for(int locationX = 0; locationX < 8; locationX++) {

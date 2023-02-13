@@ -7,6 +7,8 @@ public class ChessTile extends JPanel {
     private boolean color;
     private boolean isOccupied;
 
+    /* Constructor to represent our chess tiles
+    *  Each tiles is given a location, a color, and a boolean values that tells us if its occupied */
     public ChessTile(int locationX, int locationY, boolean color) {
         this.locationX = locationX;
         this.locationY = locationY;
