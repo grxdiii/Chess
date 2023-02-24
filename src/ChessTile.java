@@ -1,18 +1,19 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class ChessTile extends JPanel {
+    /* Variables for our tile location */
     private int locationX;
     private int locationY;
-
-    private boolean color;
+    private Color color;
     private boolean isOccupied;
 
-    /* Constructor to represent our chess tiles
-    *  Each tiles is given a location, a color, and a boolean values that tells us if its occupied */
-    public ChessTile(int locationX, int locationY, boolean color) {
+    /* Constructor */
+    public ChessTile(int locationX, int locationY, Color color) {
         this.locationX = locationX;
         this.locationY = locationY;
         this.color = color;
+        this.isOccupied = false;
     }
 
     public int getLocationX() {
@@ -31,11 +32,24 @@ public class ChessTile extends JPanel {
         this.locationY = locationY;
     }
 
-    public boolean isColor() {
+    public Color isColor() {
         return color;
     }
 
     public boolean isOccupied() {
         return isOccupied;
+    }
+
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
     }
 }
