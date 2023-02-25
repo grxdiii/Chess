@@ -1,39 +1,40 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 
 public class Chessboard {
     /* Variables for our Chess board */
-    private JFrame frame;
-    private ChessTile boardTiles[][];
+    private final JFrame frame;
+    private ChessTile[][] boardTiles;
 
     /* Stores Pieces information */
     private String boardState;
-    private Image pieceImage[];
-    private static Color light = Color.decode("#fafbfc");
-    private static Color dark = Color.decode("#5b80ba");
+    private static final Color light = Color.decode("#f0f0f0");
+    private static final Color dark = Color.decode("#5b80ba");
 
     /* Constructor to generate our chess board */
     public Chessboard () throws HeadlessException {
         this.boardTiles = new ChessTile[8][8];
-        this.boardState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        this.boardState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
 
+        /* Sets up our frame */
         this.frame = new JFrame();
         this.frame.setTitle("Chess");
-        this.frame.setSize(1080, 1108);
+        this.frame.setLayout(null);
+        this.frame.setSize(920, 948);
         this.frame.setDefaultCloseOperation(3);
 
-        generateChessBoard(boardTiles);
+        /* Generates our initial board */
+        generateChessBoard();
+        generatePieces();
 
+        /* More frame settings */
         this.frame.setVisible(true);
         this.frame.setResizable(false);
         this.frame.setLocationRelativeTo(null);
     }
 
     /* Function to draw our chess board */
-    private void generateChessBoard(ChessTile boardTiles[][]) {
+    private void generateChessBoard() {
         Color tileColor;
 
         /* Chess boards are represented using 2d arrays, hence why we have a for loop within another */
@@ -49,29 +50,55 @@ public class Chessboard {
 
                 /* Adds our tile to our frame */
                 tiles.setBackground(tileColor);
-                tiles.setBounds(locationX * 135, locationY * 135, 135, 135);
-                boardTiles[locationX][7 - locationY] = tiles;
+                tiles.setBounds(locationX * 115, locationY * 115, 115, 115);
+                this.boardTiles[locationX][7 - locationY] = tiles;
                 this.frame.add(tiles);
             }
         }
     }
 
-    /* Function to generate our pieces and draw them on our board */
-    private void generatePieces() throws IOException {
-        this.pieceImage = new Image[12];
+    /* Generates piece (helper function) */
+    private void pieceCase(char piece, String color, int locationX, int locationY) {
+        piece = Character.toLowerCase(piece);
 
-        pieceImage[0] = ImageIO.read(new File("../images/black_king.png"));
-        pieceImage[1] = ImageIO.read(new File("../images/black_queen.png"));
-        pieceImage[2] = ImageIO.read(new File("../image/black_rook.png"));
-        pieceImage[3] = ImageIO.read(new File("../image/black_bishop.png"));
-        pieceImage[4] = ImageIO.read(new File("../image/black_knight.png"));
-        pieceImage[5] = ImageIO.read(new File("../image/black_pawn.png"));
-        pieceImage[6] = ImageIO.read(new File("../image/white_king.png"));
-        pieceImage[7] = ImageIO.read(new File("../image/white_queen.png"));
-        pieceImage[8] = ImageIO.read(new File("../image/white_rook.png"));
-        pieceImage[9] = ImageIO.read(new File("../image/white_bishop.png"));
-        pieceImage[10] = ImageIO.read(new File("../image/white_knight.png"));
-        pieceImage[11] = ImageIO.read(new File("../image/white_pawn.png"));
+        /* Generates piece based on the letters we read */
+        if(piece == 'k') boardTiles[locationX][locationY].setPiece(new King("king", color, locationX, locationY));
+        if(piece == 'q') boardTiles[locationX][locationY].setPiece(new Queen("queen", color, locationX, locationY));
+        if(piece == 'r') boardTiles[locationX][locationY].setPiece(new Rook("rook", color, locationX, locationY));
+        if(piece == 'n') boardTiles[locationX][locationY].setPiece(new Knight("knight", color, locationX, locationY));
+        if(piece == 'b') boardTiles[locationX][locationY].setPiece(new Bishop("bishop", color, locationX, locationY));
+        if(piece == 'p') boardTiles[locationX][locationY].setPiece(new Pawn("pawn", color, locationX, locationY));
+
+        /* Adds our piece to our board and tile */
+        boardTiles[locationX][locationY].setOccupied(true);
+        boardTiles[locationX][locationY].addPiece();
+    }
+
+    /* Function to generate our pieces and draw them on our board */
+    private void generatePieces() {
+        char buffer; int locationX = 0; int locationY = 0;
+
+        /* Reads our FEN string - one character at a time */
+        for(int i = 0; i < this.boardState.length(); i++) {
+            buffer = this.boardState.charAt(i);
+
+            /* If our character is alphabetic, we know that it represents a piece */
+            if(Character.isAlphabetic(buffer)) {
+
+                /* Generates our piece */
+                if(Character.isLowerCase(buffer)) pieceCase(buffer, "light", locationX, locationY);
+                else pieceCase(buffer, "dark", locationX, locationY);
+                locationX++;
+
+            /* If our character is a numebr, we know that it represents spaces */
+            } else if (Character.isDigit(buffer)) {
+                locationX += Character.getNumericValue(buffer) - 1;
+
+            /* If our character is anything else, we know that we should go to another row */
+            } else if(buffer == '/') {
+                locationX = 0; locationY++;
+            }
+        }
     }
 
     public ChessTile[][] getBoardTiles() {
