@@ -7,6 +7,7 @@ public class ChessTile extends JPanel {
     private int locationY;
     private Color color;
     private boolean isOccupied;
+    private Piece piece;
 
     /* Constructor */
     public ChessTile(int locationX, int locationY, Color color) {
@@ -51,5 +52,17 @@ public class ChessTile extends JPanel {
 
     public void setOccupied(boolean occupied) {
         isOccupied = occupied;
+    }
+
+    public Piece getPiece() {
+        return piece;
+    }
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+    }
+
+    public void addPiece() {
+        this.piece.generatePiece(); add(piece.getPieceImage());
     }
 }
